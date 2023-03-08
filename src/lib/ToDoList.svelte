@@ -2,34 +2,24 @@
 
 <script>
 	import Button from './Button.svelte';
-	import { createEventDispatcher, onDestroy, onMount, afterUpdate, beforeUpdate } from 'svelte';
-
-	onMount(() => {
-		console.log('Component: Mounted');
-	});
-
-	onDestroy(() => {
-		console.log('Component: Destroyed');
-	});
-
-	beforeUpdate(() => {
-		if (listDiv) {
-			console.log(`Element: Height.beforeUpdate -> ${listDiv.offsetHeight}px`);
-		}
-	});
+	import { createEventDispatcher, afterUpdate } from 'svelte';
 
 	afterUpdate(() => {
 		console.log(`Element: Height.afterUpdate -> ${listDiv.offsetHeight}px`);
 
 		if (autoScroll) {
 			listDiv.scrollTo(0, listDiv.scrollHeight);
-		};
+		}
 
 		autoScroll = false;
 	});
 
 	export let toDoLists = [];
 	let prevToDoLists = toDoLists;
+	let inputText = '';
+	let listDiv, autoScroll;
+
+	const dispatch = createEventDispatcher();
 
 	$: {
 		autoScroll = toDoLists.length > prevToDoLists.length;
@@ -39,10 +29,6 @@
 	export function clearInput() {
 		inputText = '';
 	}
-
-	let listDiv, autoScroll;
-	let inputText = '';
-	const dispatch = createEventDispatcher();
 
 	function handleAddToDoLists() {
 		const isNotCancelled = dispatch(
